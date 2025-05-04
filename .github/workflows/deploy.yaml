@@ -1,0 +1,149 @@
+name: Build and Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      pyodide_packages:
+        description: 'Pyodide packages to build, will set PYODIDE_PACKAGES'
+        required: true
+        default: 'tag:core,PyJWT'
+        type: string
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    
+    env:
+      EMSDK_NUM_CORES: 2
+      EMCC_CORES: 2
+      PYODIDE_JOBS: 2
+      CCACHE_DIR: /tmp/ccache
+      PYODIDE_PACKAGES: ${{ inputs.pyodide_packages || 'tag:core,PyJWT' }}
+ 
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: 'pyodide/pyodide'
+          ref: '0.27.5'
+          submodules: 'recursive'
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: packages
+          path: new-packages
+
+      - name: Add new packages
+        shell: bash -l {0}
+        run: |
+          cp -fr new-packages/packages/* packages/
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: index.html
+          path: site/
+
+      - name: Cache ccache output
+        uses: actions/cache@v4
+        with:
+          path: |
+            /tmp/ccache
+          key: ${{ hashFiles('Makefile.envs') }}-${{ runner.os }}-v20211025-
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: pyodide-env
+          environment-file: environment.yml
+          channels: conda-forge
+
+      - name: Check Versions
+        shell: bash -l {0}
+        run: |
+          python --version
+          node --version
+          npm --version
+          cmake --version
+          which python
+          which node
+          which npm
+          which cmake
+          echo "PYODIDE_PACKAGES = ${PYODIDE_PACKAGES}"
+
+      - name: Install dependencies (ubuntu)
+        shell: bash -l {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential git xxd
+      - name: Install dependencies (Python)
+        shell: bash -l {0}
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build emsdk
+        shell: bash -l {0}
+        run: |
+          which ccache
+
+          ccache -z
+          make -C emsdk
+          ccache -s
+
+      - name: Build Cpython
+        shell: bash -l {0}
+        run: |
+          # This is necessary to use the ccache from emsdk
+          source pyodide_env.sh
+
+          which ccache
+
+          ccache -z
+          make -C cpython
+          ccache -s
+
+      - name: build Pyodide with packages
+        shell: bash -l {0}
+        run: |
+          # This is necessary to use the ccache from emsdk
+          source pyodide_env.sh
+          ccache -z
+          make
+          cp site/index.html dist/
+          ccache -s
+
+      - name: check-size
+        shell: bash -l {0}
+        run: |
+          ls -lh dist/
+
+          pip install brotli
+          ./tools/check_compressed_size.py dist/pyodide.asm.* dist/python_stdlib*
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
