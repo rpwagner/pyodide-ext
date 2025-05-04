@@ -13,11 +13,11 @@ requirements:
     - cryptography
 
 about:
-  home: null
+  home: https://github.com/jpadilla/pyjwt
   PyPI: https://pypi.org/project/PyJWT
   summary: JSON Web Token implementation in Python
   license: MIT
 
 extra:
   recipe-maintainers:
-    - PUT_YOUR_GITHUB_USERNAME_HERE
+    - rpwagner
