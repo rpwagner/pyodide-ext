@@ -6,9 +6,9 @@ The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/e
 
 TODO: Mention something about being able to do this wihtin the free level of GitHub usage and the scaling available from GitHub Pages.
 
-This repository uses its [Build and Deploy](.github/workflows/deploy.yaml) GitHub Actions workflow to build a custom Pyodide distribution by cloning the latest stable version of Pyodide, adding in the additional package definition files from this repository, building the required packages, and deploying the resulting Pyodide distribution to GitHub Pages. By default, the workflow only builds the [minimum required Pyodide packages](https://pyodide.org/en/stable/development/building-from-sources.html#partial-builds) (`tag:core`), plus the ones defined in this repository. You can update the [Build and Deploy workflow](.github/workflows/deploy.yaml) to build additional packages by default (e.g., `tag:min-scipy-stack`).
+This repository uses its Build and Deploy GitHub Actions workflow ([`deploy.yaml`](.github/workflows/deploy.yaml)  to build a custom Pyodide distribution by cloning the latest stable version of Pyodide, adding in the additional package definition files from this repository, building the required packages, and deploying the resulting Pyodide distribution to GitHub Pages. By default, the workflow only builds the [minimum required Pyodide packages](https://pyodide.org/en/stable/development/building-from-sources.html#partial-builds) (`tag:core`), plus the ones defined in this repository. You can update [`deploy.yaml`](.github/workflows/deploy.yaml) to build additional packages by default (e.g., `tag:min-scipy-stack`).
 
-The [Build and Deploy](.github/workflows/deploy.yaml) workflow is derived from the Pyodide [`main`](https://github.com/pyodide/pyodide/blob/main/.github/workflows/main.yml) workflow, and currently this template is pinned Pyodide version 0.27.5. You can verify this by checking around [line 35 of Build and Deploy](.github/workflows/deploy.yaml#L35)
+The [`deploy.yaml`](.github/workflows/deploy.yaml) workflow definition file is derived from the Pyodide [`main`](https://github.com/pyodide/pyodide/blob/main/.github/workflows/main.yml) workflow, and currently this template is pinned Pyodide version 0.27.5. You can verify this by checking around [line 35 of `deploy.yaml`](.github/workflows/deploy.yaml#L35):
 ```yaml
       - uses: actions/checkout@v4
         with:
@@ -16,14 +16,16 @@ The [Build and Deploy](.github/workflows/deploy.yaml) workflow is derived from t
           ref: '0.27.5'
           submodules: 'recursive'
 ```
-The [Build and Deploy](.github/workflows/deploy.yaml) workflow may need be modified for future Pyodide releases.
+The workflow may need be modified for future Pyodide releases.
 
-To get started, the basic steps are:
-1. Create a new GitHub repository using this template. ([jump to section](#generating-a-new-repository))
-1. Configure GitHub Pages to build using the [Build and Deploy](.github/workflows/deploy.yaml) workflow. ([jump to section](#configure-and-build-github-pages))
-1. Add new package folders and `meta.yaml` files in the [`packages/`](./packages/) folder. ([jump to section](#adding-packages))
-1. Check the build status in the Actions tab.
-1. Test the build in the REPL console at: `https://{your-github-username}.github.io/{repo-name}/console.html`.
+Outline:
+
+1. [Generating a New Repository](#generating-a-new-repository)
+1. [Configure and Build GitHub Pages](#configure-and-build-github-pages)
+1. [Adding Packages](#adding-packages)
+1.1 [Adding Packages Using `pyodide-build`](#adding-packages-using-pyodide-build)
+1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
+1. [Using the Pyodide Distribution](#using-the-pyodide-distribution)
 
 ## Generating a New Repository
 
@@ -81,12 +83,13 @@ And then checking the box "Use your GitHub Pages website".
 
 <img src="./img/use-pages-site.png" width="50%" height="50%" style='border:2px solid #555'>
 
-
 ## Adding Packages
 
 Pyodide packages are [defined by `meta.yaml` files](https://pyodide.org/en/stable/development/new-packages.html#creating-the-meta-yaml-file) that proivde URLs for the source code, lists of dependencies, build instructions, etc. For basic pure-Python packages, these files can be fairly minimal and [created programmatically](https://pyodide.org/en/stable/development/meta-yaml.html#meta-yaml-spec).  
 
 One complication to keep in mind is that you will need to add all of the dependencies for your package, except for those in the [Python Standard Library](https://docs.python.org/3/library/index.html) or already [included with Pyodide](https://pyodide.org/en/stable/usage/packages-in-pyodide.html). The `finddeps.py` script described below can help identify the needed dependencies.
+
+The Pyodide documentation has detailed instructions on [how to add packages](https://pyodide.org/en/stable/development/new-packages.html). This also includes the best recommendation, which is to look at packages that have already been ported to Pyodide in [the main repoistory's packages folder](https://github.com/pyodide/pyodide/tree/main/packages). The method used in this this repository is not the only way to add packages (see the [Pyodide "Loading packages" documentation](https://pyodide.org/en/stable/usage/loading-packages.html)). You can directly install many packages using `micropip.install()`, or build packages in or out of the main Pyodide tree. The approach in this repository is to avoid using `micropip.install()` so that Jupyter notebooks and Python modules can remain portable without needing to check the runtime environment. However, you may find it easier to develop and test the build process for a given package and its dependencies by using a local development process and then adding the package definition (`meta.yaml`, patches, etc.) into this repository when it's working as expected.
 
 Adding a new package and rebuilding the distribution uses these steps:
 1. Define a new package by creating a new `meta.yaml` file in [`packages`](./packages), under `packages/{package-name}/meta.yaml`.
