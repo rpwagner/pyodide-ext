@@ -103,8 +103,11 @@ Test the build in the REPL console at: `https://{github-username}.github.io/{rep
 
 ## Using the Pyodide Distribution
 
+The Pyodide documentation describes [how to use Pyodide](https://pyodide.org/en/stable/usage/index.html) in a web browser or environments like Node.js. For those use cases and to [use it in JupyterLite](https://jupyterlite.readthedocs.io/en/stable/howto/pyodide/pyodide.html#using-a-custom-pyodide-distribution), you will usually point to the `pyodide.js` file in the distribution. This can be fund at:
 
 `https://{github-username}.github.io/{repo-name}/pyodide.js`
 
 
-`https://{github-username}.github.io/{repo-name}/console.html`
+
+
+
