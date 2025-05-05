@@ -39,6 +39,14 @@ After you enable this, go to the "Actions" tab on your repository:
 
 ![Example link to GitHub repo Actions tab](./img/repo-action-tab.png)
 
+Click on the "Build and Deploy" button below the list of "All workflows":
+
+![Link to Build and Deploy](./img/build-and-deploy.png)
+
+On the right, click on the "Run workflow" button, and in the dropdown, click on the the next "Run workflow" button. You don't need to change any of the settings at this time.
+
+![Link to Build and Deploy](./img/run-workflow.png)
+
 
 
 You might find it convenient to add a link to your GitHub Pages
