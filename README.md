@@ -35,21 +35,31 @@ Some notes:
 
 This repository uses a [GitHub Actions workflow](https://docs.github.com/en/actions/writing-workflows/about-workflows) to build a Pyodide distribution and to deploy that distribution to GitHub Pages. First, follow the GitHub instructions to enable [building the distribution using the GitHub Actions workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow) on your new repository.
 
+---
+
 After you enable this, go to the "Actions" tab on your repository:
 
 <img src="./img/repo-action-tab.png" width="50%" height="50%" style='border:2px solid #555'>
+
+---
 
 Click on the "Build and Deploy" button below the list of "All workflows":
 
 <img src="./img/build-and-deploy.png" width="50%" height="50%" style='border:2px solid #555'>
 
+---
+
 On the right, click on the "Run workflow" button, and in the dropdown, click on the the next "Run workflow" button. You don't need to change any of the settings at this time.
 
 <img src="./img/run-workflow.png" width="50%" height="50%" style='border:2px solid #555'>
 
+---
+
 The build process will take about 15 minutes. You can monitor the status by looking at the workflow run under the "Actions" tab. This build process will happen every time you make a commit to your repository, either directly or via a pull request. Sometimes you don't want to cause another build to happen and you can [cancel the workflow](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/canceling-a-workflow).
 
 Once the workflow completes, you can test the distribution by going to your GitHub Pages site at: `https://{github-username}.github.io/{repo-name}/`. There will be a landing page with a link to the Pyodide REPL console for your new distribution.
+
+---
 
 You might find it convenient to add a link to your GitHub Pages site to your repository's main page. You can do this by clicking on the "About" setting on the main page:
 
@@ -89,9 +99,7 @@ pyodide skeleton pypi <package name>
 
 ## Testing the Pyodide Distribution
 
-
 Test the build in the REPL console at: `https://{github-username}.github.io/{repo-name}/console.html`.
-
 
 ## Using the Pyodide Distribution
 
