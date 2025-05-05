@@ -59,6 +59,16 @@ On the right, click on the "Run workflow" button, and in the dropdown, click on 
 
 The build process will take about 15 minutes. You can monitor the status by looking at the workflow run under the "Actions" tab. This build process will happen every time you make a commit to your repository, either directly or via a pull request. Sometimes you don't want to cause another build to happen and you can [cancel the workflow](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/canceling-a-workflow).
 
+If you look into the build logs for the workflow run, you can the list of packages being built under the `build Pyodide with packages` step. Since this is the first build, it represents the packages built as part of the `tag:core` list, plus PyJWT.
+```
+Building the following packages: Jinja2, MarkupSafe, PyJWT, atomicwrites, attrs,
+buffer-test, cffi, cpp-exceptions-test, cpp-exceptions-test2, cryptography,     
+exceptiongroup, fpcast-test, hashlib, iniconfig, liblzma, lzma, micropip,       
+more-itertools, openssl, packaging, pluggy, py, pycparser, pydecimal,           
+pydoc_data, pyparsing, pytest, pytest-asyncio, pytz, regex, setuptools,         
+sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
+```
+
 Once the workflow completes, you can test the distribution by going to your GitHub Pages site at: `https://{github-username}.github.io/{repo-name}/`. There will be a landing page with a link to the Pyodide REPL console for your new distribution.
 
 ---
@@ -258,23 +268,39 @@ $ git push origin main
 
 This will trigger a build, which can be monitored by going to the Actions tab and clicking on the "added seaborn" workflow run.
 
-<img src="./img/added-seaborn.png" width="50%" height="50%" style='border:2px solid #555'>
+<img src="./img/added-seaborn.png" width="75%" height="75%" style='border:2px solid #555'>
+
+Looking at the workflow logs under the `build Pyodide with packages` step we can see that `numpy`, `matplotlib`, and `pandas` are now included in the build, in addition to Seaborn. These new packages will add quite a bit to the build time.
+```
+Building the following packages: Jinja2, MarkupSafe, Pillow, PyJWT,             
+atomicwrites, attrs, buffer-test, cffi, contourpy, cpp-exceptions-test,         
+cpp-exceptions-test2, cryptography, cycler, exceptiongroup, fonttools,          
+fpcast-test, hashlib, iniconfig, kiwisolver, liblzma, libtiff, libwebp, lzma,   
+matplotlib, matplotlib-pyodide, micropip, more-itertools, numpy, openssl,       
+packaging, pandas, pluggy, py, pycparser, pydecimal, pydoc_data, pyparsing,     
+pytest, pytest-asyncio, python-dateutil, pytz, regex, seaborn, setuptools,      
+sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
+```
 
 ## Testing the Pyodide Distribution
 
-Test the build in the REPL console at: `https://{github-username}.github.io/{repo-name}/console.html`.
+Test the build in the REPL console at: `https://{github-username}.github.io/{repo-name}/console.html`. May need to clear your website data reguarly, in case the REPL files are being cached in your browser.
 
 At a minimum, import the package to ensure the dependencies are declared correctly.
 
-May need to clear your website data reguarly, in case the REPL files are being cached in your browser.
+```python
+Welcome to the Pyodide 0.27.5 terminal emulator 🐍
+Python 3.12.7 (main, May  5 2025 08:30:39) on WebAssembly/Emscripten
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import seaborn
+Matplotlib is building the font cache; this may take a moment.
+>>> 
+```
+Everything loads correctly. When this distribution is used in a JupyterLite site, the plotting capabilities of Seaborn can be tested.
+
 
 ## Using the Pyodide Distribution
 
 The Pyodide documentation describes [how to use Pyodide](https://pyodide.org/en/stable/usage/index.html) in a web browser or environments like Node.js. For those use cases and to [use it in JupyterLite](https://jupyterlite.readthedocs.io/en/stable/howto/pyodide/pyodide.html#using-a-custom-pyodide-distribution), you will usually point to the `pyodide.js` file in the distribution. This can be fund at:
 
 `https://{github-username}.github.io/{repo-name}/pyodide.js`
-
-
-
-
-

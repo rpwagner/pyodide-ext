@@ -6,7 +6,7 @@ on:
       pyodide_packages:
         description: 'Pyodide packages to build, will set PYODIDE_PACKAGES'
         required: true
-        default: 'tag:core,PyJWT,seaborn'
+        default: 'tag:core,PyJWT'
         type: string
   push:
     branches:
@@ -26,7 +26,7 @@ jobs:
       EMCC_CORES: 2
       PYODIDE_JOBS: 2
       CCACHE_DIR: /tmp/ccache
-      PYODIDE_PACKAGES: ${{ inputs.pyodide_packages || 'tag:core,PyJWT,seaborn' }}
+      PYODIDE_PACKAGES: ${{ inputs.pyodide_packages || 'tag:core,PyJWT' }}
  
     steps:
       - uses: actions/checkout@v4
