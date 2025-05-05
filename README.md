@@ -71,7 +71,7 @@ pydoc_data, pyparsing, pytest, pytest-asyncio, pytz, regex, setuptools,
 sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
 ```
 
-Once the workflow completes, you can test the distribution by going to your GitHub Pages site at: `https://{github-username}.github.io/{repo-name}/`. There will be a landing page with a link to the Pyodide REPL console for your new distribution.
+Once the workflow completes, you can test the distribution by going to your GitHub Pages site at: `https://{github-username}.github.io/pyodide-ext/`. There will be a landing page with a link to the Pyodide REPL console for your new distribution.
 
 ---
 
@@ -104,8 +104,8 @@ Adding a new package and rebuilding the distribution uses these steps:
 Clone your repository and change into its directory
 
 ```shell
-$ git clone https://github.com/{github-username}/{repo-name}.git
-$ cd {repo-name}
+$ git clone https://github.com/{github-username}/pyodide-ext.git
+$ cd pyodide-ext
 ```
 
 ---
@@ -115,6 +115,7 @@ Create a virtual Python environment. This is not strictly necessary, just a reco
 ```shell
 $ python -m venv venv
 $ source venv/bin/activate
+(venv) $
 ```
 
 ---
@@ -122,7 +123,7 @@ $ source venv/bin/activate
 Install `pyodide-build` and other requirement.
 
 ```shell
-$ pip install -r requirements.txt
+(venv) $ pip install -r requirements.txt
 ```
 
 ---
@@ -133,7 +134,7 @@ You call the script via: `./finddeps.py {package-name}`.
 
 For example, here is the result for the [Seaborn](https://seaborn.pydata.org) data visualization library.
 ```shell
-$ ./finddeps.py seaborn
+(venv) $ ./finddeps.py seaborn
 {'seaborn': set()}
 
 ```
@@ -143,7 +144,7 @@ $ ./finddeps.py seaborn
 
 If we look at `contextily`, a Python tool for retrieving tile maps, we find there are several additional packages we would need to define and build before we could use `contextily` in Pyodide.
 ```shell
-$ ./finddeps.py contextily
+(venv) $ ./finddeps.py contextily
 {'contextily': {'geopy', 'mercantile'},
  'geographiclib': set(),
  'geopy': {'geographiclib'},
@@ -164,7 +165,7 @@ In this case, we would need to build `mercantile` and `geographiclib` (we can bu
 To get started, we can use the `pyodide-build` tool installed as part of the `requirements.txt` to create a [skeleton yaml file](https://pyodide.org/en/stable/development/new-packages.html#creating-the-meta-yaml-file) for our packages.
 
 ```shell
-$ pyodide skeleton pypi <package name>
+(venv) $ pyodide skeleton pypi <package name>
 ```
 
 Using Seaborn as the example
@@ -264,9 +265,9 @@ This file needs to update this to add Seaborn alongside PyJWT.
 
 At this point, the changes can be added, committed, and pushed to the repository
 ```shell
-$ git add packages/seaborn/meta.yaml .github/workflows/deploy.yaml
-$ git commit -m 'added seaborn'
-$ git push origin main
+(venv) $ git add packages/seaborn/meta.yaml .github/workflows/deploy.yaml
+(venv) $ git commit -m 'added seaborn'
+(venv) $ git push origin main
 ```
 
 This will trigger a build, which can be monitored by going to the Actions tab and clicking on the "added seaborn" workflow run.
@@ -287,7 +288,7 @@ sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
 
 ## Testing the Pyodide Distribution
 
-Test the build in the REPL console at: `https://{github-username}.github.io/{repo-name}/console.html`. May need to clear your website data reguarly, in case the REPL files are being cached in your browser.
+Test the build in the REPL console at: `https://{github-username}.github.io/pyodide-ext/console.html`. May need to clear your website data reguarly, in case the REPL files are being cached in your browser.
 
 At a minimum, import the package to ensure the dependencies are declared correctly.
 
@@ -306,4 +307,4 @@ Everything loads correctly. When this distribution is used in a JupyterLite site
 
 The Pyodide documentation describes [how to use Pyodide](https://pyodide.org/en/stable/usage/index.html) in a web browser or environments like Node.js. For those use cases and to [use it in JupyterLite](https://jupyterlite.readthedocs.io/en/stable/howto/pyodide/pyodide.html#using-a-custom-pyodide-distribution), you will usually point to the `pyodide.js` file in the distribution. This can be fund at:
 
-`https://{github-username}.github.io/{repo-name}/pyodide.js`
+`https://{github-username}.github.io/pyodide-ext/pyodide.js`
