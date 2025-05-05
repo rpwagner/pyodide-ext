@@ -1,2 +1,4 @@
+packaging
+requests
 pyodide-build
 prettier

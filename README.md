@@ -76,7 +76,9 @@ And then checking the box "Use your GitHub Pages website".
 
 Pyodide packages are [defined by `meta.yaml` files](https://pyodide.org/en/stable/development/new-packages.html#creating-the-meta-yaml-file) that proivde URLs for the source code, lists of dependencies, build instructions, etc. For basic pure-Python packages, these files can be fairly minimal and [created programmatically](https://pyodide.org/en/stable/development/meta-yaml.html#meta-yaml-spec).  
 
-Adding new packages and rebuilding the distribution uses these steps:
+One complication to keep in mind is that you will need to add all of the dependencies for your package, except for those in the [Python Standard Library](https://docs.python.org/3/library/index.html) or already [included with Pyodide](https://pyodide.org/en/stable/usage/packages-in-pyodide.html). The `finddeps.py` script described below can help identify the needed dependencies.
+
+Adding a new package and rebuilding the distribution uses these steps:
 1. Define a new package by creating a new `meta.yaml` file in [`packages`](./packages), under `packages/{package-name}/meta.yaml`.
 1. Add any patch files or tests under `packages/{package-name}/`, making sure they're referenced in `meta.yaml`.
 1. Update the Build and Deploy workflow to include the new package in the default build.
@@ -86,20 +88,133 @@ Adding new packages and rebuilding the distribution uses these steps:
 
 ### Adding Packages Using `pyodide-build`
 
-- Clone the repo
-- Venv `python -m venv venv`, `source venv/bin/activate`
-- install tools `pip install -r requirements.txt`
-- add you packages starting from the bottom up so you can test them
-- For each dependency create a [skeleton yaml file](https://pyodide.org/en/stable/development/new-packages.html#creating-the-meta-yaml-file)
+Clone your repository and change into its directory
+
+```shell
+$ git clone https://github.com/{github-username}/{repo-name}.git
+$ cd {repo-name}
 ```
-pyodide skeleton pypi <package name>
+
+---
+
+Create a virtual Python environment. This is not strictly necessary, just a recommended practice.
+
+```shell
+$ python -m venv venv
+$ source venv/bin/activate
 ```
-  - update download? wheel or tarball?
-  - definitely add the dependencies
-  - make sure to add all the dependencies, even standard library ones
-  - need this because of dynamic loading
+
+---
+
+Install `pyodide-build` and other requirement.
+
+```shell
+$ pip install -r requirements.txt
+```
+
+---
+
+Check whether or not you need to build any additional packages. The script `finddeps.py` will list all of the dependendencies for a given package that aren't available in Pyodide or the Python Standard Library. *N.B.* The script is extremely basic and does not check the dependencies of any extras. This may miss packages necessary for building or the feature you're interested in.
+
+You call the script via: `./finddeps.py {package-name}`.
+
+For example, here is the result for the [Seaborn](https://seaborn.pydata.org) data visualization library.
+```shell
+$ ./finddeps.py seaborn
+{'seaborn': set()}
+
+```
+
+`finddeps.py` prints out a JSON dictionary, where each key is a package name and the values are sets of package names of the dependencies for the given key. In this case, all of Seaborn's required dependencies (`numpy`, `pandas`, and `matplotlib`) are already available in Pyodide. 
+
+
+If we look at `contextily`, a Python tool for retrieving tile maps, we find there are several additional packages we would need to define and build before we could use `contextily` in Pyodide.
+```shell
+$ ./finddeps.py contextily
+{'contextily': {'geopy', 'mercantile'},
+ 'geographiclib': set(),
+ 'geopy': {'geographiclib'},
+ 'mercantile': set()}
+```
+Here's a graph representing these dependencies.
+
+```mermaid
+graph TD
+  A(contextily) --> B(geopy)
+  A --> C(mercantile)
+  B --> D(geographiclib)
+```
+In this case, we would need to build `mercantile` and `geographiclib` (we can build them in either order), then `geopy` since it depends on `geographiclib`, before we can build `contextily`. 
+
+---
+
+To get started, we can use the `pyodide-build` tool installed as part of the `requirements.txt` to create a [skeleton yaml file](https://pyodide.org/en/stable/development/new-packages.html#creating-the-meta-yaml-file) for our packages.
+
+```shell
+$ pyodide skeleton pypi <package name>
+```
+
+Using Seaborn as the exampel
+```shell
+$ pyodide skeleton pypi seaborn       
+Creating meta.yaml package for seaborn                                                                                                           
+packages/seaborn/meta.yaml 11ms
+Output written to /home/username/pyodide-ext/packages/seaborn/meta.yaml
+```
+
+This produces this YAML file
+```yaml
+package:
+  name: seaborn
+  version: 0.13.2
+  top-level:
+    - seaborn
+source:
+  url: https://files.pythonhosted.org/packages/py3/s/seaborn/seaborn-0.13.2-py3-none-any.whl
+  sha256: 636f8336facf092165e27924f223d3c62ca560b1f2bb5dff7ab7fad265361987
+about:
+  home: null
+  PyPI: https://pypi.org/project/seaborn
+  summary: Statistical data visualization
+  license: null
+extra:
+  recipe-maintainers:
+    - PUT_YOUR_GITHUB_USERNAME_HERE
+```
+
+Looking at the Seaborn source code, we can fill in a few things. Most importantly, the run time dependencies. Specifying these ensures that they will be built if Seaborn is requested, and they will be loaded (and [installed](https://pyodide.org/en/stable/usage/loading-packages.html#loading-packages)) when Seaborn is imported.
+```yaml
+package:
+  name: seaborn
+  version: 0.13.2
+  top-level:
+    - seaborn
+source:
+  url: https://files.pythonhosted.org/packages/py3/s/seaborn/seaborn-0.13.2-py3-none-any.whl
+  sha256: 636f8336facf092165e27924f223d3c62ca560b1f2bb5dff7ab7fad265361987
+requirements:
+  run:
+    - numpy
+    - pandas
+    - matplotlib
+about:
+  home: https://seaborn.pydata.org
+  PyPI: https://pypi.org/project/seaborn
+  summary: Statistical data visualization
+  license: BSD-3-Clause
+extra:
+  recipe-maintainers:
+    - {github-username}
+```
+
+Seaborn has extras, so anything provided by its [optional dependencies](https://seaborn.pydata.org/installing.html#optional-dependencies) won't be available unless those packages are loaded by another route.
+
+---
+
+
+
 - git add, commit, push
-- you can do this through the browser if you're familiar with the meta.yaml format
+
 - watch the build process
 - can also build locally
   - more advanced process
