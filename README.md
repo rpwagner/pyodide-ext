@@ -2,16 +2,11 @@
 
 This is a [template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) used to create a custom [Pyodide](https://pyodide.org/) distribution with additional packages. The motivation for this is to build interactive [JupyterLite](http://jupyterlite.readthedocs.io/) sites, but this distribution can be used for whatever you need.
 
-The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet available, and this repository and its documentation can help you get things working in Pyodide.
+The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet available, and this repository and its documentation can help you get things working in Pyodide. 
 
 TODO: Mention something about being able to do this wihtin the free level of GitHub usage and the scaling available from GitHub Pages.
 
-The basic steps are:
-1. Create a new GitHub repository using this template. ([jump to section](#generating-a-new-repository))
-1. Configure GitHub Pages to build using the [Build and Deploy](.github/workflows/deploy.yaml) workflow.
-1. Add new package folders and `meta.yaml` files in the [`packages/`](./packages/) folder.
-1. Check the build status in the Actions tab.
-1. Test the build in the REPL console at: `https://{your-github-username}.github.io/{repo-name}/console.html`.
+This repository uses its [Build and Deploy](.github/workflows/deploy.yaml) GitHub Actions workflow to build a custom Pyodide distribution by cloning the latest stable version of Pyodide, adding in the additional package definition files from this repository, building the required packages, and deploying the resulting Pyodide distribution to GitHub Pages. By default, the workflow only builds the [minimum required Pyodide packages](https://pyodide.org/en/stable/development/building-from-sources.html#partial-builds) (`tag:core`), plus the ones defined in this repository. You can update the [Build and Deploy workflow](.github/workflows/deploy.yaml) to build additional packages by default (e.g., `tag:min-scipy-stack`).
 
 The [Build and Deploy](.github/workflows/deploy.yaml) workflow is derived from the Pyodide [`main`](https://github.com/pyodide/pyodide/blob/main/.github/workflows/main.yml) workflow, and currently this template is pinned Pyodide version 0.27.5. You can verify this by checking around [line 35 of Build and Deploy](.github/workflows/deploy.yaml#L35)
 ```yaml
@@ -22,6 +17,13 @@ The [Build and Deploy](.github/workflows/deploy.yaml) workflow is derived from t
           submodules: 'recursive'
 ```
 The [Build and Deploy](.github/workflows/deploy.yaml) workflow may need be modified for future Pyodide releases.
+
+To get started, the basic steps are:
+1. Create a new GitHub repository using this template. ([jump to section](#generating-a-new-repository))
+1. Configure GitHub Pages to build using the [Build and Deploy](.github/workflows/deploy.yaml) workflow. ([jump to section](#configure-and-build-github-pages))
+1. Add new package folders and `meta.yaml` files in the [`packages/`](./packages/) folder. ([jump to section](#adding-packages))
+1. Check the build status in the Actions tab.
+1. Test the build in the REPL console at: `https://{your-github-username}.github.io/{repo-name}/console.html`.
 
 ## Generating a New Repository
 
@@ -72,6 +74,18 @@ And then checking the box "Use your GitHub Pages website".
 
 ## Adding Packages
 
+Pyodide packages are [defined by `meta.yaml` files](https://pyodide.org/en/stable/development/new-packages.html#creating-the-meta-yaml-file) that proivde URLs for the source code, lists of dependencies, build instructions, etc. For basic pure-Python packages, these files can be fairly minimal and [created programmatically](https://pyodide.org/en/stable/development/meta-yaml.html#meta-yaml-spec).  
+
+Adding new packages and rebuilding the distribution uses these steps:
+1. Define a new package by creating a new `meta.yaml` file in [`packages`](./packages), under `packages/{package-name}/meta.yaml`.
+1. Add any patch files or tests under `packages/{package-name}/`, making sure they're referenced in `meta.yaml`.
+1. Update the Build and Deploy workflow to include the new package in the default build.
+1. Commit the new package and updated workflow file to the repository.
+1. Monitor the workflow run's progress and build status.
+1. Test the updated Pyodide distribution. ([jump to section](#testing-the-pyodide-distribution)
+
+### Adding Packages Using `pyodide-build`
+
 - Clone the repo
 - Venv `python -m venv venv`, `source venv/bin/activate`
 - install tools `pip install -r requirements.txt`
@@ -97,9 +111,13 @@ pyodide skeleton pypi <package name>
   - '*'?
 - Consider committing these packages to the list of Pyodide packages
 
+
+
 ## Testing the Pyodide Distribution
 
 Test the build in the REPL console at: `https://{github-username}.github.io/{repo-name}/console.html`.
+
+Do an import and ensure the dependencies are declared correctly.
 
 ## Using the Pyodide Distribution
 
