@@ -256,29 +256,17 @@ $ git commit -m 'added seaborn'
 $ git push origin main
 ```
 
-This will trigger a build.
+This will trigger a build, which can be monitored by going to the Actions tab and clicking on the "added seaborn" workflow run.
 
-
-- git add, commit, push
-
-- watch the build process
-- can also build locally
-  - more advanced process
-- test by going to your repo and checking the build and deploy action status
-- once it's built, go to console and run a test
-  - good to test even an import to make sure dependencies were listed correctly
-- need to define a way to keep the list of packages to build up-to-date
-  - git commit hook?
-  - '*'?
-- Consider committing these packages to the list of Pyodide packages
-
-
+<img src="./img/added-seaborn.png" width="50%" height="50%" style='border:2px solid #555'>
 
 ## Testing the Pyodide Distribution
 
 Test the build in the REPL console at: `https://{github-username}.github.io/{repo-name}/console.html`.
 
-Do an import and ensure the dependencies are declared correctly.
+At a minimum, import the package to ensure the dependencies are declared correctly.
+
+May need to clear your website data reguarly, in case the REPL files are being cached in your browser.
 
 ## Using the Pyodide Distribution
 
