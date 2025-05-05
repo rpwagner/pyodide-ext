@@ -23,6 +23,7 @@ Outline:
 1. [Generating a New Repository](#generating-a-new-repository)
 1. [Configure and Build GitHub Pages](#configure-and-build-github-pages)
 1. [Adding Packages](#adding-packages)
+    1. [Example: PyJWT](#example-pyjwt)
     1. [Adding Packages Using `pyodide-build`](#adding-packages-using-pyodide-build)
 1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
 1. [Using the Pyodide Distribution](#using-the-pyodide-distribution)
