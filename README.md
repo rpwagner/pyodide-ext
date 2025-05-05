@@ -99,6 +99,39 @@ Adding a new package and rebuilding the distribution uses these steps:
 1. Monitor the workflow run's progress and build status.
 1. Test the updated Pyodide distribution. ([jump to section](#testing-the-pyodide-distribution)
 
+### Example: PyJWT
+
+A `meta.yaml` definition file for [PyJWT](https://pyjwt.readthedocs.io/en/stable/) is included in this repository at [`packages/PyJWT/meta.yaml`](packages/PyJWT/meta.yaml). Here is the file's contents:
+
+```yaml
+package:
+  name: PyJWT
+  version: 2.10.1
+  top-level:
+    - jwt
+
+source:
+  url: https://files.pythonhosted.org/packages/py3/p/pyjwt/PyJWT-2.10.1-py3-none-any.whl
+  sha256: dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb
+
+requirements:
+  run:
+    - cryptography
+    - ssl
+
+about:
+  home: https://github.com/jpadilla/pyjwt
+  PyPI: https://pypi.org/project/PyJWT
+  summary: JSON Web Token implementation in Python
+  license: MIT
+
+extra:
+  recipe-maintainers:
+    - rpwagner
+```
+
+As mentioned above, these `meta.yaml` follow a [specification](https://pyodide.org/en/stable/development/meta-yaml.html#meta-yaml-spec) which is based on the Conda packaging specification. Below, you'll see a basic version can be created programmatically, and which may be sufficient for many packages. Looking in the [`deploy.yaml`](.github/workflows/deploy.yaml) file you will see a couple of places with the text `'tag:core,PyJWT'`, which will tell the Pyodide build process to add PyJWT to the list of packages. The requirements list in the `meta.yaml` definition also ensure that the necessary dependencies also get built.
+
 ### Adding Packages Using `pyodide-build`
 
 Clone your repository and change into its directory
