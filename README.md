@@ -154,7 +154,7 @@ To get started, we can use the `pyodide-build` tool installed as part of the `re
 $ pyodide skeleton pypi <package name>
 ```
 
-Using Seaborn as the exampel
+Using Seaborn as the example
 ```shell
 $ pyodide skeleton pypi seaborn       
 Creating meta.yaml package for seaborn                                                                                                           
@@ -211,6 +211,52 @@ Seaborn has extras, so anything provided by its [optional dependencies](https://
 
 ---
 
+Now that the new package is defined, it needs to be added to the list of default packages to build. There are two places in [`deploy.yaml`](./.github/workflows/deploy.yaml) where the defualt is defined, the dispatch input and the environment. (This needs to be improved and provide a single point of truth.)
+```yaml
+  workflow_dispatch:
+    inputs:
+      pyodide_packages:
+        description: 'Pyodide packages to build, will set PYODIDE_PACKAGES'
+        required: true
+        default: 'tag:core,PyJWT'
+        type: string
+...
+    env:
+      EMSDK_NUM_CORES: 2
+      EMCC_CORES: 2
+      PYODIDE_JOBS: 2
+      CCACHE_DIR: /tmp/ccache
+      PYODIDE_PACKAGES: ${{ inputs.pyodide_packages || 'tag:core,PyJWT' }}
+```
+
+This file needs to update this to add Seaborn alongside PyJWT.
+```yaml
+  workflow_dispatch:
+    inputs:
+      pyodide_packages:
+        description: 'Pyodide packages to build, will set PYODIDE_PACKAGES'
+        required: true
+        default: 'tag:core,PyJWT,seaborn'
+        type: string
+...
+    env:
+      EMSDK_NUM_CORES: 2
+      EMCC_CORES: 2
+      PYODIDE_JOBS: 2
+      CCACHE_DIR: /tmp/ccache
+      PYODIDE_PACKAGES: ${{ inputs.pyodide_packages || 'tag:core,PyJWT,seaborn' }}
+```
+
+---
+
+At this point, the changes can be added, committed, and pushed to the repository
+```shell
+$ git add packages/seaborn/meta.yaml .github/workflows/deploy.yaml
+$ git commit -m 'added seaborn'
+$ git push origin main
+```
+
+This will trigger a build.
 
 
 - git add, commit, push
