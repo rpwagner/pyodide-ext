@@ -151,6 +151,8 @@ As mentioned above, these `meta.yaml` follow a [specification](https://pyodide.o
 
 This is an example of how to add a package that is being distributed via PyPI. The main advantage of this process is that it creates the `meta.yaml` file for you. This process can also be adapted to other packages where the source code is available as an archive (e.g., a `.tar.gz` or `.zip` file).
 
+---
+
 Clone your repository and change into its directory
 
 ```shell
@@ -191,8 +193,9 @@ For example, here is the result for the [Seaborn](https://seaborn.pydata.org) da
 
 `finddeps.py` prints out a JSON dictionary, where each key is a package name and the values are sets of package names of the dependencies for the given key. In this case, all of Seaborn's required dependencies (`numpy`, `pandas`, and `matplotlib`) are already available in Pyodide. 
 
+---
 
-If we look at `contextily`, a Python tool for retrieving tile maps, we find there are several additional packages we would need to define and build before we could use `contextily` in Pyodide.
+If we look at [`contextily`](https://contextily.readthedocs.io/), a Python tool for retrieving tile maps, we find there are several additional packages we would need to define and build before we could use `contextily` in Pyodide.
 ```shell
 (venv) $ ./finddeps.py contextily
 {'contextily': {'geopy', 'mercantile'},
@@ -338,9 +341,100 @@ sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
 
 ### Adding Your Own Package
 
-TODO: Describe how to add a custom package using [`ext-demo-package`](./packages/ext-demo-package) as the example.
+In addition to building packages from source code hosted on PyPI and other sites, you can include your own package in this repository. This is a convenient way to gather modules and script that you use frequently, but haven't published to PyPI. To demonstrate this, in the `packages/` folder [`extpackage`](./packages/extpackage) is a minimal Python package, with the source code included in the folder rather than referenced in the `meta.yaml` file.
 
-TODO: Add an example of building a package by adding a new checkout action to clone a package from GitHub and build it.
+In the `meta.yaml` for `extpackage`, there `source` is specified using a `path`, rather than a `url` field. Here the path points to the `source` folder in the `packages/extpackage/` folder, i.e., `packages/extpackage/source/`.
+
+`packages/extpackage/meta.yaml`:
+```yaml
+package:
+  name: extpackage
+  version: 0.0.1
+  top-level:
+    - extpackage
+
+source:
+  path: .
+
+about:
+  home: https://github.com/rpwagner/pyodide-ext
+  summary: A sample Python package
+  license: BSD-3-Clause
+
+extra:
+  recipe-maintainers:
+    - rpwagner
+```
+
+The `source` subfolder contains the contents usually expected in a Python package, including its `pyproject.toml` file and a `src` folder. The `src` folder contains the toplevel `expackage` folder that will eventually be imported, and the two Python files that provide a minimal text of functionality.
+```
+pyproject.toml
+src
+
+./src:
+extpackage
+
+./src/extpackage:
+__init__.py
+dog.py
+```
+
+`__init__.py`:
+```python
+from .dog import cat
+```
+
+`dog.py`:
+```python
+def cat():
+    """Example function"""
+    print('mouse')
+```
+
+Including the source code in the repository 
+
+---
+
+To build `extpackage`, we need to add it to the list of packages in [`deploy.yaml`](./.github/workflows/deploy.yaml). Assuming that you already added Seaborn, we can add `extpackages` after it.
+
+```yaml
+  workflow_dispatch:
+    inputs:
+      pyodide_packages:
+        description: 'Pyodide packages to build, will set PYODIDE_PACKAGES'
+        required: true
+        default: 'tag:core,PyJWT,seaborn,extpackage'
+        type: string
+...
+    env:
+      EMSDK_NUM_CORES: 2
+      EMCC_CORES: 2
+      PYODIDE_JOBS: 2
+      CCACHE_DIR: /tmp/ccache
+      PYODIDE_PACKAGES: ${{ inputs.pyodide_packages || 'tag:core,PyJWT,seaborn,extpackage' }}
+```
+
+After you make this change you'll need to go through the same `git add`, `git commit`, etc., steps as in the previous section and make sure the workflow completes successfully.
+
+---
+
+To test the new p
+
+```python
+Welcome to the Pyodide 0.27.5 terminal emulator 🐍
+Python 3.12.7 (main, May  7 2025 05:44:43) on WebAssembly/Emscripten
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import extpackage
+>>> help(extpackage.cat)
+Help on function cat in module extpackage.dog:
+cat()
+    Example function
+>>> extpackage.cat()
+mouse
+>>> 
+```
+
+TODO: Describe how to build a package by adding a new checkout action to clone a package from GitHub and build it.
 
 ## Testing the Pyodide Distribution
 

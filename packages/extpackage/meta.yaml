@@ -1,5 +1,5 @@
 package:
-  name: ext-demo-package
+  name: extpackage
   version: 0.0.1
   top-level:
     - extpackage
