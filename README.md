@@ -1,7 +1,5 @@
 # `pyodide-ext`: Extending Pyodide
 
-Outline:
-
 1. [Overview](#overview)
     1. [Why Use This?](#why-use-this)
     1. [Implementation](#implementation)
@@ -10,6 +8,7 @@ Outline:
 1. [Adding Packages](#adding-packages)
     1. [Example: PyJWT](#example-pyjwt)
     1. [Adding Packages Using `pyodide-build`](#adding-packages-using-pyodide-build)
+    1. [Adding Your Own Package](#adding-your-own-package)
 1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
 1. [Using the Pyodide Distribution](#using-the-pyodide-distribution)
 
@@ -17,9 +16,9 @@ Outline:
 
 This is a [template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) used to create a custom [Pyodide](https://pyodide.org/) distribution with additional packages. The motivation for this is to build interactive [JupyterLite](http://jupyterlite.readthedocs.io/) sites, but this distribution can be used for whatever you need.
 
-The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet available, and this repository and its documentation can help you get things working in Pyodide. 
-
 ### Why Use This?
+
+The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet included in Pyodide. This repository is intended to help you build a custom distribution of Pyodide with packages from [PyPI](https://pypi.org) and your own packages that may only be available as source code.
 
 TODO: Describe motivation more clearly to avoid need to install packages as part of scripts or notebooks.
 
@@ -338,6 +337,8 @@ sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
 ### Adding Your Own Package
 
 TODO: Describe how to add a custom package using [`ext-demo-package`](./packages/ext-demo-package) as the example.
+
+TODO: Add an example of building a package by adding a new checkout action to clone a package from GitHub and build it.
 
 ## Testing the Pyodide Distribution
 
