@@ -1,5 +1,20 @@
 # `pyodide-ext`: Extending Pyodide
 
+Outline:
+
+1. [Overview](#overview)
+    1. [Why Use This?](#why-use-this)
+    1. [Implementation](#implementation)
+1. [Generating a New Repository](#generating-a-new-repository)
+1. [Configure and Build GitHub Pages](#configure-and-build-github-pages)
+1. [Adding Packages](#adding-packages)
+    1. [Example: PyJWT](#example-pyjwt)
+    1. [Adding Packages Using `pyodide-build`](#adding-packages-using-pyodide-build)
+1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
+1. [Using the Pyodide Distribution](#using-the-pyodide-distribution)
+
+## Overview
+
 This is a [template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) used to create a custom [Pyodide](https://pyodide.org/) distribution with additional packages. The motivation for this is to build interactive [JupyterLite](http://jupyterlite.readthedocs.io/) sites, but this distribution can be used for whatever you need.
 
 The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet available, and this repository and its documentation can help you get things working in Pyodide. 
@@ -25,16 +40,6 @@ The [`deploy.yaml`](.github/workflows/deploy.yaml) workflow definition file is d
           submodules: 'recursive'
 ```
 The workflow may need be modified for future Pyodide releases.
-
-Outline:
-
-1. [Generating a New Repository](#generating-a-new-repository)
-1. [Configure and Build GitHub Pages](#configure-and-build-github-pages)
-1. [Adding Packages](#adding-packages)
-    1. [Example: PyJWT](#example-pyjwt)
-    1. [Adding Packages Using `pyodide-build`](#adding-packages-using-pyodide-build)
-1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
-1. [Using the Pyodide Distribution](#using-the-pyodide-distribution)
 
 ## Generating a New Repository
 
