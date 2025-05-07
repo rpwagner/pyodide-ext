@@ -8,23 +8,19 @@
 1. [Adding Packages](#adding-packages)
     1. [Example: PyJWT](#example-pyjwt)
     1. [Adding Packages from PyPI](#adding-packages-from-pypi)
+    1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
     1. [Adding Your Own Package](#adding-your-own-package)
-1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
 1. [Using the Pyodide Distribution](#using-the-pyodide-distribution)
 
 ## Overview
 
-This is a [template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) used to create a custom [Pyodide](https://pyodide.org/) distribution with additional packages. The motivation for this is to build interactive [JupyterLite](http://jupyterlite.readthedocs.io/) sites, but this distribution can be used for whatever you need.
+This is a [template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) used to create a custom [Pyodide](https://pyodide.org/) distribution with additional packages. The motivation for this is to build interactive [JupyterLite](http://jupyterlite.readthedocs.io/) sites, but this distribution can be used for whatever you need. Also, the process leverages resources provided by [GitHub Free for personal accounts](https://docs.github.com/en/get-started/learning-about-github/githubs-plans#github-free-for-personal-accounts) making it widely accessible to many users.
 
 ### Why Use This?
 
 The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet included in Pyodide. This repository is intended to help you build a custom distribution of Pyodide with packages from [PyPI](https://pypi.org) and your own packages that may only be available as source code.
 
-TODO: Describe motivation more clearly to avoid need to install packages as part of scripts or notebooks.
-
-TODO: Also, ability to include custom packages, modules, etc., that aren't on PyPI. (See [`ext-demo-package`](./packages/ext-demo-package)).
-
-TODO: Mention something about being able to do this wihtin the free level of GitHub usage and the scaling available from GitHub Pages.
+This is very helpful when supporting a JupyterLite environment. Otherwise, users are required to use [`micropip.install()`](https://pyodide.org/en/stable/usage/loading-packages.html) in their notebooks to install requirements before importing them. This makes notebooks less portable and can be a challenge for users unfamiliar with Pyodide. There is also an example in this repository of how to [add your own package](#adding-your-own-package) to make it easier to incorporate your own code without publishing it to PyPI. 
 
 ### Implementation
 
@@ -339,6 +335,22 @@ pytest, pytest-asyncio, python-dateutil, pytz, regex, seaborn, setuptools,
 sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
 ```
 
+### Testing the Pyodide Distribution
+
+Test the build in the REPL console at: `https://{github-username}.github.io/pyodide-ext/console.html`. May need to clear your website data reguarly, in case the REPL files are being cached in your browser.
+
+At a minimum, import the package to ensure the dependencies are declared correctly. 
+
+```python
+Welcome to the Pyodide 0.27.5 terminal emulator 🐍
+Python 3.12.7 (main, May  5 2025 08:30:39) on WebAssembly/Emscripten
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import seaborn
+Matplotlib is building the font cache; this may take a moment.
+>>> 
+```
+Everything loads correctly. When this distribution is used in a JupyterLite site, the plotting capabilities of Seaborn can be tested.
+
 ### Adding Your Own Package
 
 In addition to building packages from source code hosted on PyPI and other sites, you can include your own package in this repository. This is a convenient way to gather modules and script that you use frequently, but haven't published to PyPI. To demonstrate this, in the `packages/` folder [`extpackage`](./packages/extpackage) is a minimal Python package, with the source code included in the folder rather than referenced in the `meta.yaml` file.
@@ -354,7 +366,7 @@ package:
     - extpackage
 
 source:
-  path: .
+  path: source
 
 about:
   home: https://github.com/rpwagner/pyodide-ext
@@ -366,7 +378,9 @@ extra:
     - rpwagner
 ```
 
-The `source` subfolder contains the contents usually expected in a Python package, including its `pyproject.toml` file and a `src` folder. The `src` folder contains the toplevel `expackage` folder that will eventually be imported, and the two Python files that provide a minimal text of functionality.
+Including the source code in `packages/` can lead to a deep folder hierarchy that requires some tracking. The `source` subfolder contains the contents usually expected in a Python package, including its `pyproject.toml` file and a `src` folder. The `src` folder contains the toplevel `expackage` folder that will eventually be imported, and the two Python files that provide a minimal text of functionality.
+
+`packages/extpackage/source/`:
 ```
 pyproject.toml
 src
@@ -390,8 +404,6 @@ def cat():
     """Example function"""
     print('mouse')
 ```
-
-Including the source code in the repository 
 
 ---
 
@@ -418,7 +430,7 @@ After you make this change you'll need to go through the same `git add`, `git co
 
 ---
 
-To test the new p
+To test `extpackage`, we can go to the console, import the package and execute the one included function. Remember that you may need to clear your browser's cache of your GitHub Pages subdomain to make sure it has the correct list of available packages.
 
 ```python
 Welcome to the Pyodide 0.27.5 terminal emulator 🐍
@@ -434,24 +446,13 @@ mouse
 >>> 
 ```
 
-TODO: Describe how to build a package by adding a new checkout action to clone a package from GitHub and build it.
+---
 
-## Testing the Pyodide Distribution
+This process can also be used to build packages that are available source on GitHub. Here are the basic steps:
 
-Test the build in the REPL console at: `https://{github-username}.github.io/pyodide-ext/console.html`. May need to clear your website data reguarly, in case the REPL files are being cached in your browser.
-
-At a minimum, import the package to ensure the dependencies are declared correctly.
-
-```python
-Welcome to the Pyodide 0.27.5 terminal emulator 🐍
-Python 3.12.7 (main, May  5 2025 08:30:39) on WebAssembly/Emscripten
-Type "help", "copyright", "credits" or "license" for more information.
->>> import seaborn
-Matplotlib is building the font cache; this may take a moment.
->>> 
-```
-Everything loads correctly. When this distribution is used in a JupyterLite site, the plotting capabilities of Seaborn can be tested.
-
+1. Create a new folder and `meta.yaml` file in `packages` similar to the previous example.
+1. Update [`deploy.yaml`](./.github/workflows/deploy.yaml) to clone the other repository into an unused path using the [checkout action](https://github.com/actions/checkout). Look at how portions of this repository are cloned using a sparse checkout for an example.
+1. Copy the source of the other repository into the `source` folder of the new package.
 
 ## Using the Pyodide Distribution
 
