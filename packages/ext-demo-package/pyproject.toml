@@ -1,0 +1,30 @@
+# This is derived from the packaging sample project at
+# https://github.com/pypa/sampleproject/
+# See the pyproject.toml file in that repository
+# for information about the fields.
+# https://github.com/pypa/sampleproject/blob/main/pyproject.toml
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ext-demo-package"
+version = "0.1"
+description = "A sample Python package"
+requires-python = ">=3.12"
+license = "BSD-3-Clause"
+keywords = ["example", "pyodide", "setuptools", "development"]
+authors = [{ name = "Rick Wagner", email = "rick@sdsc.edu" }]
+maintainers = [
+  { name = "Rick Wagner", email = "rick@sdsc.edu" },
+]
+
+# These are based on the original pyodide-ext repo.
+# If you modify this to reuse it, you should update these
+# accordingly.
+[project.urls]
+"Homepage" = "https://github.com/rpwagner/pyodide-ext"
+"Bug Reports" = "https://github.com/rpwagner/pyodide-ext/issues"
+"Source" = "https://github.com/rpwagner/pyodide-ext/tree/main/packages/ext-demo-package"
+

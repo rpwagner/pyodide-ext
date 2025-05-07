@@ -4,7 +4,15 @@ This is a [template repository](https://docs.github.com/en/repositories/creating
 
 The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet available, and this repository and its documentation can help you get things working in Pyodide. 
 
+### Why Use This?
+
+TODO: Describe motivation more clearly to avoid need to install packages as part of scripts or notebooks.
+
+TODO: Also, ability to include custom packages, modules, etc., that aren't on PyPI. (See [`ext-demo-package`](./packages/ext-demo-package)).
+
 TODO: Mention something about being able to do this wihtin the free level of GitHub usage and the scaling available from GitHub Pages.
+
+### Implementation
 
 This repository uses its Build and Deploy GitHub Actions workflow ([`deploy.yaml`](.github/workflows/deploy.yaml)  to build a custom Pyodide distribution by cloning the latest stable version of Pyodide, adding in the additional package definition files from this repository, building the required packages, and deploying the resulting Pyodide distribution to GitHub Pages. By default, the workflow only builds the [minimum required Pyodide packages](https://pyodide.org/en/stable/development/building-from-sources.html#partial-builds) (`tag:core`), plus the ones defined in this repository. You can update [`deploy.yaml`](.github/workflows/deploy.yaml) to build additional packages by default (e.g., `tag:min-scipy-stack`).
 
@@ -39,6 +47,8 @@ Some notes:
 ## Configure and Build GitHub Pages
 
 This repository uses a [GitHub Actions workflow](https://docs.github.com/en/actions/writing-workflows/about-workflows) to build a Pyodide distribution and to deploy that distribution to GitHub Pages. First, follow the GitHub instructions to enable [building the distribution using the GitHub Actions workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow) on your new repository.
+
+If you see build work and deploy fail, double check this.
 
 ---
 
@@ -319,6 +329,10 @@ packaging, pandas, pluggy, py, pycparser, pydecimal, pydoc_data, pyparsing,
 pytest, pytest-asyncio, python-dateutil, pytz, regex, seaborn, setuptools,      
 sharedlib-test, sharedlib-test-py, six, sqlite3, ssl, tblib, and test
 ```
+
+### Adding Your Own Package
+
+TODO: Describe how to add a custom package using [`ext-demo-package`](./packages/ext-demo-package) as the example.
 
 ## Testing the Pyodide Distribution
 

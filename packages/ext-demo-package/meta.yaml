@@ -1,0 +1,17 @@
+package:
+  name: ext-demo-package
+  version: 0.0.1
+  top-level:
+    - extpackage
+
+source:
+  path: ./
+
+about:
+  home: https://github.com/rpwagner/pyodide-ext
+  summary: A sample Python package
+  license: BSD-3-Clause
+
+extra:
+  recipe-maintainers:
+    - rpwagner
