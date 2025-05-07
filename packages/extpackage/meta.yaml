@@ -5,7 +5,7 @@ package:
     - extpackage
 
 source:
-  path: .
+  path: source
 
 about:
   home: https://github.com/rpwagner/pyodide-ext
