@@ -7,7 +7,7 @@
 1. [Configure and Build GitHub Pages](#configure-and-build-github-pages)
 1. [Adding Packages](#adding-packages)
     1. [Example: PyJWT](#example-pyjwt)
-    1. [Adding Packages Using `pyodide-build`](#adding-packages-using-pyodide-build)
+    1. [Adding Packages from PyPI](#adding-packages-from-pypi)
     1. [Adding Your Own Package](#adding-your-own-package)
 1. [Testing the Pyodide Distribution](#testing-the-pyodide-distribution)
 1. [Using the Pyodide Distribution](#using-the-pyodide-distribution)
@@ -147,7 +147,9 @@ extra:
 
 As mentioned above, these `meta.yaml` follow a [specification](https://pyodide.org/en/stable/development/meta-yaml.html#meta-yaml-spec) which is based on the Conda packaging specification. Below, you'll see a basic version can be created programmatically, and which may be sufficient for many packages. Looking in the [`deploy.yaml`](.github/workflows/deploy.yaml) file you will see a couple of places with the text `'tag:core,PyJWT'`, which will tell the Pyodide build process to add PyJWT to the list of packages. The requirements list in the `meta.yaml` definition also ensure that the necessary dependencies also get built.
 
-### Adding Packages Using `pyodide-build`
+### Adding Packages from PyPI
+
+This is an example of how to add a package that is being distributed via PyPI. The main advantage of this process is that it creates the `meta.yaml` file for you. This process can also be adapted to other packages where the source code is available as an archive (e.g., a `.tar.gz` or `.zip` file).
 
 Clone your repository and change into its directory
 

@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ext-demo-package"
-version = "0.1"
+version = "0.0.1"
 description = "A sample Python package"
 requires-python = ">=3.12"
 license = "BSD-3-Clause"
