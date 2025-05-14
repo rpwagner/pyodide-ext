@@ -79,6 +79,7 @@ jobs:
       - name: Install dependencies (ubuntu)
         shell: bash -l {0}
         run: |
+          sudo apt-get update
           sudo apt-get install -y build-essential git xxd
       - name: Install dependencies (Python)
         shell: bash -l {0}
