@@ -31,17 +31,31 @@ def get_all_package_deps_tree(package_name, tree, base_packages):
         for dep in tree[package_name]:
             get_all_package_deps_tree(dep, tree, base_packages)
 
+def get_foundation_deps(package_name, tree, base_packages):
+    deps = get_package_deps(package_name)
+    tree['other_deps'] = deps.difference(base_packages)
+    tree['pyodide_deps'] = deps.intersection(base_packages)
+
 if __name__ == '__main__':
 
     import sys
     import pprint
 
-    if not len(sys.argv) == 2:
+    if not len(sys.argv) >= 2:
         print('Usage: ./finddeps.py <package name>')
         sys.exit(1)
-    root_package = sys.argv[1]
+    root_package = sys.argv[-1]
     tree = {}
-    get_all_package_deps_tree(root_package, tree, base_packages)
+    if len(sys.argv) == 2:
+        get_all_package_deps_tree(root_package, tree, base_packages)
+    else:
+        get_foundation_deps(root_package, tree, base_packages)
     pretty_print = pprint.PrettyPrinter()
     pretty_print.pprint(tree)
-
+    if len(sys.argv) != 2:
+        if tree['other_deps'] or tree['pyodide_deps']:
+            all_deps = tree['other_deps'].union(tree['pyodide_deps'])
+            print('requirements:')
+            print('  run:')
+            for dep in all_deps:
+                print(f'    - {dep}')
