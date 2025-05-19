@@ -20,7 +20,7 @@ This is a [template repository](https://docs.github.com/en/repositories/creating
 
 The base Pyodide distribution [includes over 250 pacakges](https://pyodide.org/en/stable/usage/packages-in-pyodide.html) beyond those in the [Python Standard Library](https://docs.python.org/3/library/index.html). However, your project may need packages that aren't yet included in Pyodide. This repository is intended to help you build a custom distribution of Pyodide with packages from [PyPI](https://pypi.org) and your own packages that may only be available as source code.
 
-This is very helpful when supporting a JupyterLite environment. Otherwise, users are required to use [`micropip.install()`](https://pyodide.org/en/stable/usage/loading-packages.html) in their notebooks to install requirements before importing them. This makes notebooks less portable and can be a challenge for users unfamiliar with Pyodide. There is also an example in this repository of how to [add your own package](#adding-your-own-package) to make it easier to incorporate your own code without publishing it to PyPI. 
+This is very helpful when supporting a JupyterLite environment. Otherwise, users are required to use [micropip.instal](https://pyodide.org/en/stable/usage/loading-packages.html) in their notebooks to install requirements before importing them. This makes notebooks less portable and can be a challenge for users unfamiliar with Pyodide. There is also an example in this repository of how to [add your own package](#adding-your-own-package) to make it easier to incorporate your own code without publishing it to PyPI. 
 
 ### Implementation
 
@@ -100,10 +100,10 @@ Pyodide packages are [defined by `meta.yaml` files](https://pyodide.org/en/stabl
 
 One complication to keep in mind is that you will need to add all of the dependencies for your package, except for those in the [Python Standard Library](https://docs.python.org/3/library/index.html) or already [included with Pyodide](https://pyodide.org/en/stable/usage/packages-in-pyodide.html). The `finddeps.py` script described below can help identify the needed dependencies.
 
-The Pyodide documentation has detailed instructions on [how to add packages](https://pyodide.org/en/stable/development/new-packages.html). This also includes the best recommendation, which is to look at packages that have already been ported to Pyodide in [the main repoistory's packages folder](https://github.com/pyodide/pyodide/tree/main/packages). The method used in this this repository is not the only way to add packages (see the [Pyodide "Loading packages" documentation](https://pyodide.org/en/stable/usage/loading-packages.html)). You can directly install many packages using `micropip.install()`, or build packages in or out of the main Pyodide tree. The approach in this repository is to avoid using `micropip.install()` so that Jupyter notebooks and Python modules can remain portable without needing to check the runtime environment. However, you may find it easier to develop and test the build process for a given package and its dependencies by using a local development process and then adding the package definition (`meta.yaml`, patches, etc.) into this repository when it's working as expected.
+The Pyodide documentation has detailed instructions on [how to add packages](https://pyodide.org/en/stable/packages.html). This also includes the best recommendation, which is to look at packages that have already been ported to Pyodide in [the main repoistory's packages folder](https://github.com/tree/packages). The method used in this this repository is not the only way to add packages (see the [Pyodide "Loading packages" documentation](https:/clone/stable/usage/loading-packages.html)). You can directly install many packages using `micropip.install()`, or build packages in or out of the main Pyodide tree. The approach in this repository is to avoid using `micropip.install()` so that Jupyter notebooks and Python modules can remain portable without needing to check the runtime environment. However, you may find it easier to develop and test the build process for a given package and its dependencies by using a local development process and then adding the package definition ('clone.yaml`, patches, etc.) into this repository when it's working as expected.
 
 Adding a new package and rebuilding the distribution uses these steps:
-1. Define a new package by creating a new `meta.yaml` file in [`packages`](./packages), under `packages/{package-name}/meta.yaml`.
+1. Define a new package by creating a new `clone.yaml` file in (packages), under `packages/{package-name}/clone.yaml`.
 1. Add any patch files or tests under `packages/{package-name}/`, making sure they're referenced in `meta.yaml`.
 1. Update the Build and Deploy workflow to include the new package in the default build.
 1. Commit the new package and updated workflow file to the repository.
@@ -112,7 +112,7 @@ Adding a new package and rebuilding the distribution uses these steps:
 
 ### Example: PyJWT
 
-A `meta.yaml` definition file for [PyJWT](https://pyjwt.readthedocs.io/en/stable/) is included in this repository at [`packages/PyJWT/meta.yaml`](packages/PyJWT/meta.yaml). Here is the file's contents:
+A `meta.yaml` definition file for [PyJWT](https://pyjwt.readthedocs.io/en/stable/) is included in this repository at [`packages/clone.yaml`](packages/clone.yaml). Here is the file's contents:
 
 ```yaml
 package:
