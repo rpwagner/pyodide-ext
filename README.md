@@ -470,7 +470,7 @@ As described in [Limitations and Building a Full Stack](#limitations-and-buildin
 
 My suggestion is to set the default to build all of the packages, so that when you make a change you don't inadvertently build just a subset of what you need. You can also use a fork of your repository for testing, but I won't go into that here.
 
-To build all of the packages in both the Pyodide distribution and your new ones, change the text in [`deploy.yaml`](./.github/workflows/deploy.yaml) like `'tag:core,PyJWT,seaborn'` to `'*'`. Note that the build will likely take over an hour.
+To build all of the packages in both the Pyodide distribution and your new ones, change the text in [`deploy.yaml`](./.github/workflows/deploy.yaml) like `'tag:core,PyJWT,seaborn'` to `'*'`. Note that the build will likely take a few hours (see [this recent workflow run](https://github.com/rpwagner/pyodide-ext/actions/runs/15179839466)).
 
 ```yaml
   workflow_dispatch:
