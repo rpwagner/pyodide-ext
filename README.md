@@ -44,7 +44,9 @@ By default, this repository is configured to build a subset of the [available pa
 
 ## Generating a New Repository
 
-<img src="./img/use-template.png" width="50%" height="50%" style='border:2px solid #555'>
+Click the "Use this repository" button on the top right of this repo page and select "Create a new repository".
+
+<img src="./img/use-template.png" width="25%" height="25%" style='border:2px solid #555'>
 
 These instructions apply to [`https://github.com/rpwagner/pyodide-ext`](https://github.com/rpwagner/pyodide-ext). If this is a repository generated from the original, it may not be a template, so you will need to fork it or clone it to reuse it. To generate your own repository based on this one, you can follow [GitHub's instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template#creating-a-repository-from-a-template).
 
