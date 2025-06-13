@@ -7,7 +7,7 @@ from packaging.requirements import Requirement
 base_packages = set()
 pyodide_packages = open('pyodide-packages.txt').readlines()
 for p in pyodide_packages:
-    base_packages.add(p.strip().lower())
+    base_packages.add(p.strip())
 
 def get_package_deps(package_name):
     dependencies = set()
@@ -18,7 +18,7 @@ def get_package_deps(package_name):
         for dep in requires_dist:
             req = Requirement(dep)
             if not req.marker:
-                dependencies.add(req.name.lower())
+                dependencies.add(req.name)
     except Exception as e:
         pass
     return dependencies
