@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: 'pyodide/pyodide'
-          ref: 'main'
+          ref: '0.28.0a3'
           submodules: 'recursive'
 
       - uses: actions/checkout@v4
